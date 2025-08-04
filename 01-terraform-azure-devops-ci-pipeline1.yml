@@ -24,7 +24,7 @@ stages:
     # Target Directory: $(Build.ArtifactStagingDirectory)
     - task: CopyFiles@2
       inputs:
-        SourceFolder: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+        SourceFolder: '$(Build.SourcesDirectory)/01-terraform-azure-devops-ci-pipeline'
         Contents: '**'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         OverWrite: true
