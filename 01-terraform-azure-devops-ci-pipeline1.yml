@@ -24,10 +24,11 @@ stages:
     # Target Directory: $(Build.ArtifactStagingDirectory)
     - task: CopyFiles@2
       inputs:
-        SourceFolder: '$(Build.SourcesDirectory)/01-terraform-azure-devops-ci-pipeline'
-        Contents: '**'
+        SourceFolder: '$(Build.SourcesDirectory)'
+        Contents: '**/*.tf'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         OverWrite: true
+      displayName: 'Copy Terraform Files to Artifact Staging Directory' 
     # List files from Build Artifact Staging Directory - After Copy
     - bash: echo After copying to Build Artifact Directory; ls -R $(Build.ArtifactStagingDirectory)  
     # Task-3: Publish build artifacts (Publish build to Azure Pipelines)           
