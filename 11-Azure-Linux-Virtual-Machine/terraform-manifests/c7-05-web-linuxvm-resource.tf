@@ -1,5 +1,5 @@
 # Locals Block for custom data
-locals {
+/*locals {
 webvm_custom_data = <<CUSTOM_DATA
 #!/bin/sh
 #sudo yum update -y
@@ -44,4 +44,39 @@ resource "azurerm_linux_virtual_machine" "web_linuxvm" {
   }  
   #custom_data = filebase64("${path.module}/app-scripts/redhat-webvm-script.sh")
   custom_data = base64encode(local.webvm_custom_data)
+}
+*/
+locals {
+webvm_custom_data = <<CUSTOM_DATA
+#!/bin/bash
+# Update & install Apache
+apt-get update -y
+apt-get install -y apache2
+systemctl enable apache2
+systemctl start apache2
+
+# Disable firewall if exists
+which ufw && ufw disable || echo "ufw not found"
+
+# Setup web content
+mkdir -p /var/www/html/app1
+chmod -R 777 /var/www/html
+
+echo "Welcome to stacksimplify - WebVM App1 - VM Hostname: $(hostname)" > /var/www/html/index.html
+echo "Welcome to stacksimplify - WebVM App1 - VM Hostname: $(hostname)" > /var/www/html/app1/hostname.html
+echo "Welcome to stacksimplify - WebVM App1 - App Status Page" > /var/www/html/app1/status.html
+
+cat <<EOF > /var/www/html/app1/index.html
+<!DOCTYPE html>
+<html>
+  <body style="background-color:rgb(250, 210, 210);">
+    <h1>Welcome to Stack Simplify - WebVM APP-1 </h1>
+    <p>Terraform Demo</p>
+    <p>Application Version: V1</p>
+  </body>
+</html>
+EOF
+
+curl -H "Metadata:true" --noproxy "*" "http://169.254.169.254/metadata/instance?api-version=2020-09-01" -o /var/www/html/app1/metadata.html
+CUSTOM_DATA
 }
