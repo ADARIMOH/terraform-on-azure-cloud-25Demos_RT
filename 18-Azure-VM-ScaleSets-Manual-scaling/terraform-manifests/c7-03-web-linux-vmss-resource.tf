@@ -37,7 +37,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "web_vmss" {
   source_image_reference {
     publisher = "RedHat"
     offer = "RHEL"
-    sku = "83-gen2"
+    #sku = "83-gen2"
+    sku = "8-lvm-gen2"
     version = "latest"
   }   
 
