@@ -26,12 +26,13 @@ resource "azurerm_public_ip" "mypublicip" {
   allocation_method   = "Static"
   tags = {
     environment = "Dev"
+    comment = "Test tag"
   }
 }
 
 # Resource-5: Create Network Interface
-resource "azurerm_network_interface" "myvmnic" {
-  name                = "vmnic"
+resource "azurerm_network_interface" "myvmnic8888" {
+  name                = "vmnic5555"
   location            = azurerm_resource_group.myrg.location
   resource_group_name = azurerm_resource_group.myrg.name
 
@@ -39,7 +40,7 @@ resource "azurerm_network_interface" "myvmnic" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.mysubnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id = azurerm_public_ip.mypublicip.id 
+    public_ip_address_id          = azurerm_public_ip.mypublicip.id
   }
 }
 

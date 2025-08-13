@@ -42,6 +42,14 @@ resource "azurerm_linux_virtual_machine" "web_linuxvm" {
     sku = "83-gen2"
     version = "latest"
   }  
+   /* ###############################################
+    source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-focal"
+    sku       = "20_04-lts"
+    version   = "latest"
+  } 
+  ######################################################*/
   #custom_data = filebase64("${path.module}/app-scripts/redhat-webvm-script.sh")
   custom_data = base64encode(local.webvm_custom_data)
 }

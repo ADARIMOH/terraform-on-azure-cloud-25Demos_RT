@@ -17,7 +17,7 @@ output "web_linuxvm_network_interface_private_ip_addresses" {
 }
 
 # Linux VM Outputs
-
+/*############## Commented both and added */
 ## Virtual Machine Public IP
 output "web_linuxvm_public_ip_address" {
   description = "Web Linux Virtual Machine Public IP"
@@ -30,6 +30,17 @@ output "web_linuxvm_private_ip_address" {
   description = "Web Linux Virtual Machine Private IP"
   value = azurerm_linux_virtual_machine.web_linuxvm.private_ip_address
 }
+/* ######### Suggestion by chatgpt #########################################################
+output "web_linuxvm_public_ip_address" {
+  description = "Web Linux Virtual Machine Public IP"
+  value       = azurerm_public_ip.web_linuxvm_publicip.ip_address
+}
+
+output "web_linuxvm_private_ip_address" {
+  description = "Web Linux Virtual Machine Private IP"
+  value       = azurerm_network_interface.web_linuxvm_nic.private_ip_addresses[0]
+}
+###########################################################################################*/
 ## Virtual Machine 128-bit ID
 output "web_linuxvm_virtual_machine_id_128bit" {
   description = "Web Linux Virtual Machine ID - 128-bit identifier"

@@ -7,18 +7,28 @@ resource "azurerm_storage_account" "storage_account" {
   account_tier             = var.storage_account_tier
   account_replication_type = var.storage_account_replication_type
   account_kind             = var.storage_account_kind
-
+/* commneting this block --- MA 
   static_website {
     index_document     = var.static_website_index_document
     error_404_document = var.static_website_error_404_document
-  }
+  } */
+}
+
+/* AStatic website configuration (separate resource) - MA*/
+
+resource "azurerm_storage_account_static_website" "site" {
+  /*count              = var.enable_static_website ? 1 : 0 */
+  storage_account_id = azurerm_storage_account.storage_account.id
+  index_document     = var.static_website_index_document
+  error_404_document = var.static_website_error_404_document
 }
 
 
 # Resource-2: httpd files Container
 resource "azurerm_storage_container" "httpd_files_container" {
   name                  = "httpd-files-container"
-  storage_account_name  = azurerm_storage_account.storage_account.name
+  #storage_account_name  = azurerm_storage_account.storage_account.name
+  storage_account_id    = azurerm_storage_account.storage_account.id
   container_access_type = "private"
 }
 

@@ -36,7 +36,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "app_vmss" {
   source_image_reference {
     publisher = "RedHat"
     offer = "RHEL"
-    sku = "83-gen2"
+    sku = "8-lvm-gen2"
     version = "latest"
   }
 
@@ -56,6 +56,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "app_vmss" {
       primary   = true
       subnet_id = azurerm_subnet.appsubnet.id  
       load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.app_lb_backend_address_pool.id]
+     
     }
   }
   #custom_data = filebase64("${path.module}/app-scripts/redhat-app1-script.sh")      
