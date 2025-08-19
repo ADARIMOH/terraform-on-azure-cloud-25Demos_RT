@@ -18,7 +18,7 @@ terraform {
 # Terraform State Storage to Azure Storage Container
   backend "azurerm" {
     resource_group_name   = "terraform-storage-rg"
-    storage_account_name  = "terraformstate201"
+    storage_account_name  = "terraformstate888"
     container_name        = "tfstatefiles"
     key                   = "project-1-eastus2-terraform.tfstate"
   }  
@@ -26,7 +26,9 @@ terraform {
 
 # Provider Block
 provider "azurerm" {
- features {}          
+  features {}
+  subscription_id = "455c3b60-50c3-47d1-9e54-ec046e2686b9"
+  tenant_id       = "d77ec4e8-c88b-431b-8d7f-77755a4bbefc"
 }
 
 

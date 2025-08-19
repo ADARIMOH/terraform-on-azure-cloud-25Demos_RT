@@ -10,6 +10,6 @@ locals {
     Tag = "demo-tag1"  # Uncomment during step-08   
     Tag = "demo-tag2" 
     Tag = "demo-tag3" 
-    Tag = "demo-tag4" 
+    Tag = "demo-tag888" #changed from tag4 to tag888 
   }
 } 
