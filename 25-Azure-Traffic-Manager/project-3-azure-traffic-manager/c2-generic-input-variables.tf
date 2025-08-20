@@ -26,3 +26,9 @@ variable "resource_group_location" {
   default = "eastus2"  
 }
 
+variable "tfstate_sas_token" {
+  description = "SAS taken for storage account to be created"
+  type = string
+  default = "eastus2"  
+}
+
