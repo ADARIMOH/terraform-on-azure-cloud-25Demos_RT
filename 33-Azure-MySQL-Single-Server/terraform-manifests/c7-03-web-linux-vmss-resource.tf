@@ -13,11 +13,13 @@ sudo yum -y install telnet
 sudo yum -y install mysql
 mkdir /home/azureuser/app3-usermgmt && cd /home/azureuser/app3-usermgmt
 wget https://github.com/stacksimplify/temp1/releases/download/1.0.0/usermgmt-webapp.war -P /home/azureuser/app3-usermgmt 
-export DB_HOSTNAME=${azurerm_mysql_server.mysql_server.fqdn}
+
+export DB_HOSTNAME=${azurerm_mysql_flexible_server.mysql.fqdn}
 export DB_PORT=3306
-export DB_NAME=${azurerm_mysql_database.webappdb.name}
-export DB_USERNAME="${azurerm_mysql_server.mysql_server.administrator_login}@${azurerm_mysql_server.mysql_server.fqdn}"
-export DB_PASSWORD=${azurerm_mysql_server.mysql_server.administrator_login_password}
+export DB_NAME=${azurerm_mysql_flexible_database.webappdb.name}
+export DB_USERNAME=${var.mysql_db_username}
+export DB_PASSWORD=${var.mysql_db_password}
+
 java -jar /home/azureuser/app3-usermgmt/usermgmt-webapp.war > /home/azureuser/app3-usermgmt/ums-start.log &
 CUSTOM_DATA  
 }
@@ -27,7 +29,13 @@ CUSTOM_DATA
 resource "azurerm_linux_virtual_machine_scale_set" "web_vmss" {
   # 1. Create VMSS only if Java App related DB Schema "webappdb" is created in MySQL Server
   # 2. Only create VMSS if DB is ready with Virtual Network Rule so connection for Java App can be established to DB
-  depends_on = [azurerm_mysql_database.webappdb, azurerm_mysql_virtual_network_rule.mysql_virtual_network_rule] 
+  /*depends_on = [azurerm_mysql_database.webappdb, azurerm_mysql_virtual_network_rule.mysql_virtual_network_rule] 
+  */
+  depends_on = [
+  azurerm_mysql_flexible_database.webappdb,
+  azurerm_mysql_flexible_server_firewall_rule.mysql_fw_rule
+]
+
   name                = "${local.resource_name_prefix}-web-vmss"
   #computer_name_prefix = "vmss-app1" # if name argument is not valid one for VMs, we can use this for VM Names
   resource_group_name = azurerm_resource_group.rg.name
@@ -44,7 +52,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "web_vmss" {
   source_image_reference {
     publisher = "RedHat"
     offer = "RHEL"
-    sku = "83-gen2"
+    sku = "8-lvm-gen2"
     version = "latest"
   }
 
@@ -64,7 +72,12 @@ resource "azurerm_linux_virtual_machine_scale_set" "web_vmss" {
       primary   = true
       subnet_id = azurerm_subnet.websubnet.id  
       #load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.web_lb_backend_address_pool.id]
-      application_gateway_backend_address_pool_ids = [azurerm_application_gateway.web_ag.backend_address_pool[0].id]            
+      #application_gateway_backend_address_pool_ids = [azurerm_application_gateway.web_ag.backend_address_pool[0].id]            
+      #application_gateway_backend_address_pool_ids = [azurerm_application_gateway.web_ag.backend_address_pool[0].id]
+      application_gateway_backend_address_pool_ids = [
+      for p in azurerm_application_gateway.web_ag.backend_address_pool : p.id
+      if p.name == local.backend_address_pool_name_app1
+      ]
     }
   }
   #custom_data = filebase64("${path.module}/app-scripts/redhat-app1-script.sh")      

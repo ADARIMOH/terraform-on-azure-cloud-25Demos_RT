@@ -17,15 +17,19 @@ terraform {
   }
 # Terraform State Storage to Azure Storage Container (Values will be taken from Azure DevOps)
   backend "azurerm" {
-    
+  #resource_group_name   = "terraform-storage-rg"
+    #storage_account_name  = "terraformstate888"
+    #container_name        = "tfstatefiles"
+    #key                   = "dev-terraform.tfstate"  
+    #sas_token = var.tfstate_sas_token
   }   
 }
 
 # Provider Block
 provider "azurerm" {
   features {}
-subscription_id = "455c3b60-50c3-47d1-9e54-ec046e2686b9"
-tenant_id       = "d77ec4e8-c88b-431b-8d7f-77755a4bbefc"
+subscription_id = "0e6c5fc5-3180-4de5-923a-4eb74fafaafc"
+tenant_id       = "2652e19c-101f-4022-867c-3bffe73ea6d5"
 }
 
 #TEst CI CD

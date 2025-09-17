@@ -25,4 +25,12 @@ variable "resource_group_location" {
   type = string
   default = "eastus2"  
 }
+variable "mysql_location" {
+  type    = string
+  default = "eastus2"           # pick a supported region for MySQL Flexible
+}
 
+variable "mysql_sku_name" {
+  type    = string
+  default = "GP_Standard_D2ds_v4"  # choose one that exists in your region
+}

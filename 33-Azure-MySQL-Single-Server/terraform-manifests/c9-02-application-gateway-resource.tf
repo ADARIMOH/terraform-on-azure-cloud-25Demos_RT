@@ -120,6 +120,7 @@ resource "azurerm_application_gateway" "web_ag" {
     rule_type                  = "Basic"
     http_listener_name         = local.listener_name_http 
     redirect_configuration_name = local.redirect_configuration_name
+    priority                    = 100
   }
 # Redirect Config for HTTP to HTTPS Redirect  
   redirect_configuration {
@@ -161,7 +162,8 @@ resource "azurerm_application_gateway" "web_ag" {
     rule_type                  = "Basic"
     http_listener_name         = local.listener_name_https
     backend_address_pool_name  = local.backend_address_pool_name_app1
-    backend_http_settings_name = local.http_setting_name_app1    
+    backend_http_settings_name = local.http_setting_name_app1  
+    priority                   = 110  
   }
 
 

@@ -25,7 +25,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "web_vmss" {
   #computer_name_prefix = "vmss-app1" # if name argument is not valid one for VMs, we can use this for VM Names
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  sku                 = "Standard_DS1_v2"
+  sku                 = "Standard_B1s"
   instances           = 2
   admin_username      = "azureuser"
 

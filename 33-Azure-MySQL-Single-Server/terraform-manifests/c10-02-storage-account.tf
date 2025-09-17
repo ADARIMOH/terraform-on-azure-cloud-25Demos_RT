@@ -8,10 +8,7 @@ resource "azurerm_storage_account" "storage_account" {
   account_replication_type = var.storage_account_replication_type
   account_kind             = var.storage_account_kind
 
-  static_website {
-    index_document     = var.static_website_index_document
-    error_404_document = var.static_website_error_404_document
-  }
+  
 }
 
 # Locals Block for Static html files for Azure Application Gateway 
@@ -28,5 +25,11 @@ resource "azurerm_storage_blob" "static_container_blob" {
   type                   = "Block"
   content_type           = "text/html"
   source = "${path.module}/custom-error-pages/${each.value}"
+   depends_on = [azurerm_storage_account_static_website.site]
 }
 
+resource "azurerm_storage_account_static_website" "site" {
+  storage_account_id = azurerm_storage_account.storage_account.id
+  index_document     = "index.html"
+  error_404_document = "404.html"
+}
