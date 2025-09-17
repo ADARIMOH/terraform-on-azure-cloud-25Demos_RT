@@ -3,7 +3,7 @@ data "terraform_remote_state" "project1_eastus2" {
   backend = "azurerm"
   config = {
     resource_group_name   = "terraform-storage-rg"
-    storage_account_name  = "terraformstate888"
+    storage_account_name  = "terraformstate8888"
     container_name        = "tfstatefiles"
     key                   = "project-1-eastus2-terraform.tfstate"
     #use_azuread_auth     = true # --MA
@@ -16,7 +16,7 @@ data "terraform_remote_state" "project2_westus2" {
   backend = "azurerm"
   config = {
     resource_group_name   = "terraform-storage-rg"
-    storage_account_name  = "terraformstate888"
+    storage_account_name  = "terraformstate8888"
     container_name        = "tfstatefiles"
     key                   = "project-2-westus2-terraform.tfstate"
     #use_azuread_auth     = true  # --MA

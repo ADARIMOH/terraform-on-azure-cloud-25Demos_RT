@@ -19,8 +19,9 @@ resource "azurerm_subnet" "mysubnet" {
 # Create Virtual Network and Subnets using Terraform Public Registry Module
 module "vnet" {
   source  = "Azure/vnet/azurerm"
-  version = "2.5.0" # No versions constraints for production grade implementation - always lock version in prod for modules
+  version = ">=3.0.0" # No versions constraints for production grade implementation - always lock version in prod for modules
   vnet_name = local.vnet_name
+  vnet_location       = azurerm_resource_group.myrg.location 
   resource_group_name = azurerm_resource_group.myrg.name
   address_space       = ["10.0.0.0/16"]
   subnet_prefixes     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]

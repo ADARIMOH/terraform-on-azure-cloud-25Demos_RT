@@ -3,8 +3,8 @@ business_unit = "it"
 #environment = "dev"
 
 # Resource Variables
-resoure_group_name = "rg"
-resoure_group_location = "eastus"
+resource_group_name = "rg"
+resource_group_location = "eastus"
 virtual_network_name = "vnet"
 subnet_name = "subnet"
 publicip_name = "publicip"

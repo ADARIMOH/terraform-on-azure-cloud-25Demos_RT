@@ -12,13 +12,13 @@ variable "environment" {
   default = "dev"
 }
 # 3. Resource Group Name
-variable "resoure_group_name" {
+variable "resource_group_name" {
   description = "Resource Group Name"
   type = string
   default = "myrg"
 }
 # 4. Resource Group Location
-variable "resoure_group_location" {
+variable "resource_group_location" {
   description = "Resource Group Location"
   type = string
   default = "eastus"
