@@ -2,7 +2,7 @@
 module "azure_static_website" {
   #source = "./modules/azure-static-website"  
   source  = "ADARIMOH/staticwebsitepublic88888/azurerm"
-  version = "1.0.1"
+  version = "1.0.2"
 
   # Resource Group
   location            = "eastus"

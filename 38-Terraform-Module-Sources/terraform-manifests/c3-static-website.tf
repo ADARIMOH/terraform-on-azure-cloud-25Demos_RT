@@ -5,11 +5,11 @@ module "azure_static_website" {
   #source = "./modules/azure-static-website"  
   
   # Terraform Public Registry
-  #source  = "stacksimplify/staticwebsitepb/azurerm"
-  #version = "2.0.0"
+  source  = "ADARIMOH/staticwebsitepublic88888/azurerm"
+  version = "1.0.2"
 
   # Github Clone over HTTPS 
-  source = "github.com/stacksimplify/terraform-azurerm-staticwebsitepublic"
+  #source = "github.com/stacksimplify/terraform-azurerm-staticwebsitepublic"
 
   # Github Clone over SSH (if git SSH configured with your repo - https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh)
   #source = "git@github.com:stacksimplify/terraform-azurerm-staticwebsitepublic.git"

@@ -1,20 +1,78 @@
 #cloud-config
-package_upgrade: false
-packages:
-  - httpd
-write_files:
-  - owner: root:root 
-    path: /var/www/html/index.html
-    content: |
-      <h1>Welcome to StackSimplify - APP-1</h1>
-  - owner: root:root 
-    path: /var/www/html/app1/index.html
-    content: |
-      <!DOCTYPE html> <html> <body style="background-color:rgb(250, 210, 210);"> <h1>Welcome to Stack Simplify - APP-1</h1> <p>Terraform Demo</p> <p>Application Version: V1</p> </body></html>      
-runcmd:
-  - sudo systemctl start httpd  
-  - sudo systemctl enable httpd
-  - sudo systemctl stop firewalld
-  - sudo mkdir /var/www/html/app1 
-  - [sudo, curl, -H, "Metadata:true", --noproxy, "*", "http://169.254.169.254/metadata/instance?api-version=2020-09-01", -o, /var/www/html/app1/metadata.html]
+package_update: true
 
+write_files:
+  # 1) One-time bootstrap script (does the real work)
+  - path: /usr/local/bin/app1-bootstrap.sh
+    owner: root:root
+    permissions: '0755'
+    content: |
+      #!/usr/bin/env bash
+      set -euxo pipefail
+      LOG=/var/log/app1-setup.log
+      echo "=== app1-bootstrap start $(date -Is) ===" | tee -a "$LOG"
+
+      # Install web + firewall (no weak deps to keep it lean)
+      dnf clean all -y || true
+      dnf -y install --setopt=install_weak_deps=False httpd firewalld | tee -a "$LOG"
+
+      # Firewall: allow HTTP and reload (works whether firewalld was present or not)
+      systemctl enable --now firewalld || true
+      for i in {1..30}; do firewall-cmd --state >/dev/null 2>&1 && break || sleep 1; done
+      firewall-cmd --permanent --add-service=http || true
+      firewall-cmd --reload || true
+
+      # Web content
+      install -d -m0755 /var/www/html/app1
+      cat > /var/www/html/index.html <<'EOF'
+      <h1>Welcome to StackSimplify - APP-1</h1>
+      EOF
+
+      cat > /var/www/html/app1/index.html <<'EOF'
+      <!DOCTYPE html>
+      <html><body style="background-color:rgb(250,210,210);">
+      <h1>Welcome to Stack Simplify - APP-1</h1>
+      <p>Terraform Demo</p>
+      <p>Application Version: V1</p>
+      </body></html>
+      EOF
+
+      # Metadata page
+      curl -sS -H "Metadata:true" --noproxy "*" \
+        "http://169.254.169.254/metadata/instance?api-version=2020-09-01" \
+        | sed '1s/^/<pre>/' | sed '$s/$/<\/pre>/' \
+        > /var/www/html/app1/metadata.html || true
+
+      restorecon -R /var/www/html || true
+
+      # Start Apache and enable at boot
+      systemctl enable --now httpd
+
+      # Prove port 80 is listening (not fatal if grep fails early)
+      ss -lntp | grep ':80' | tee -a "$LOG" || true
+
+      echo "=== app1-bootstrap end $(date -Is) ===" | tee -a "$LOG"
+
+  # 2) One-shot systemd unit that runs the script exactly once on first boot
+  - path: /etc/systemd/system/app1-setup.service
+    owner: root:root
+    permissions: '0644'
+    content: |
+      [Unit]
+      Description=One-time APP1 bootstrap
+      After=network-online.target
+      Wants=network-online.target
+      ConditionPathExists=!/var/lib/app1-setup.done
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/bash -lc "/usr/local/bin/app1-bootstrap.sh 2>&1 | tee -a /var/log/app1-setup.log"
+      ExecStartPost=/usr/bin/touch /var/lib/app1-setup.done
+      RemainAfterExit=yes
+
+      [Install]
+      WantedBy=multi-user.target
+
+runcmd:
+  - [ systemctl, daemon-reload ]
+  - [ systemctl, enable, --now, app1-setup.service ]

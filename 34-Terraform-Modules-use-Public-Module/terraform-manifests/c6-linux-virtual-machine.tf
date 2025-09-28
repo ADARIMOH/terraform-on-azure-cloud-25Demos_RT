@@ -4,7 +4,7 @@ resource "azurerm_linux_virtual_machine" "mylinuxvm" {
   computer_name       = local.vm_name # Hostname of the VM
   resource_group_name = azurerm_resource_group.myrg.name
   location            = azurerm_resource_group.myrg.location
-  size                = "Standard_B1s"
+  size                = "Standard_B2s"
   admin_username      = "azureuser"
   network_interface_ids = [azurerm_network_interface.myvmnic.id]
   admin_ssh_key {
@@ -22,6 +22,7 @@ resource "azurerm_linux_virtual_machine" "mylinuxvm" {
     sku       = "8-lvm-gen2"
     version   = "latest"
   }
+  #custom_data = filebase64("${path.module}/app-scripts/app1-cloud-init.txt")
   custom_data = filebase64("${path.module}/app-scripts/app1-cloud-init.txt")
   tags = local.common_tags
 }
